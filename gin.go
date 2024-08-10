@@ -1,36 +1,29 @@
 package main
 
 import (
+	"dds_core_server/config"
+	"dds_core_server/controller"
 	"dds_core_server/kafka"
 	"github.com/gin-gonic/gin"
 	"log"
 )
 
 func main() {
-	r := gin.Default()
+	// 初始化配置
+	conf := config.ConfigInit()
 
 	// 初始化kafka
-	err := kafka.InitKafkaProducer([]string{"47.98.225.138:9092"})
+	err := kafka.InitKafkaProducer(conf.Kafka.Addr)
 	if err != nil {
 		log.Fatalf("kafka producer init err: %v", err)
 		return
 	}
 	defer kafka.Producer.Close()
 
-	r.GET("/send_message", func(c *gin.Context) {
-
-		err := kafka.Produce(kafka.KafkaMessage{
-			Action: "Add",
-			IP:     "11.1.1.1",
-			Topic:  "test",
-		})
-		if err != nil {
-			c.JSON(500, resp.InternalError(err))
-			return
-		}
-
-		c.JSON(200, resp.Success())
-	})
+	// 初始化gin框架
+	r := gin.Default()
+	// dds启动时的载入接口
+	r.POST("/send_info", controller.SendInfo)
 
 	r.Run() // 默认监听并在 0.0.0.0:8080 上启动服务
 }
