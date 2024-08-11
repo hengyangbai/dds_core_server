@@ -18,7 +18,7 @@ const (
 	ACTION_DELETE = "Delete"
 )
 
-func Produce(msg KafkaMessage) error {
+func Produce(msg *KafkaMessage) error {
 	msgBytes, err := json.Marshal(msg)
 	if err != nil {
 		log.Printf("json marshal msg err:%v", err)

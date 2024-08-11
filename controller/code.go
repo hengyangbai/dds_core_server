@@ -1,11 +1,11 @@
-package main
+package controller
 
 type Response struct {
 	Code    int32  `json:"code"`
 	Message string `json:"message"`
 }
 
-var Resp Response
+var resp Response
 
 func (*Response) InternalError(err error) Response {
 	return Response{
