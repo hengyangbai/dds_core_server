@@ -8,10 +8,17 @@ import (
 
 type Config struct {
 	Kafka Kafka `mapstructure:"kafka" json:"kafka"`
+	Redis Redis `mapstructure:"redis" json:"redis"`
 }
 
 type Kafka struct {
 	Addr []string `mapstructure:"addr" json:"addr"`
+}
+
+type Redis struct {
+	Addr     string `mapstructure:"addr" json:"addr"`
+	Db       int32  `mapstructure:"db" json:"db"`
+	PoolSize int32  `mapstructure:"pool_size" json:"pool_size"`
 }
 
 func ConfigInit() *Config {
