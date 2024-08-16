@@ -21,18 +21,19 @@ func main() {
 	}
 	defer kafka.Producer.Close()
 
-	// 初始化redis
-	err = data.RedisInit(conf.Redis)
+	// 初始化data层
+	repo, err := data.NewRepo(conf.Redis)
 	if err != nil {
 		log.Fatalf("redis init err: %v", err)
 		return
 	}
+	control := controller.NewController(repo)
 
 	// 初始化gin框架
 	r := gin.Default()
 	// dds启动时的载入接口
-	r.POST("/send_info", controller.SendInfo)
+	r.POST("/send_info", control.SendInfo)
 	// 首页分页查询接口
-	r.GET("/list", controller.GetInfoList)
+	r.GET("/list", control.GetInfoList)
 	r.Run() // 默认监听并在 0.0.0.0:8080 上启动服务
 }
